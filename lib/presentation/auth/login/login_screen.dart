@@ -2,41 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import 'register_controller.dart';
+import 'login_controller.dart';
 
-class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({super.key});
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => RegisterController(),
-      child: const _RegisterView(),
+      create: (_) => LoginController(),
+      child: const _LoginView(),
     );
   }
 }
 
-class _RegisterView extends StatefulWidget {
-  const _RegisterView();
+class _LoginView extends StatefulWidget {
+  const _LoginView();
 
   @override
-  State<_RegisterView> createState() => _RegisterViewState();
+  State<_LoginView> createState() => _LoginViewState();
 }
 
-class _RegisterViewState extends State<_RegisterView> {
+class _LoginViewState extends State<_LoginView> {
   final _formKey = GlobalKey<FormState>();
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
-  final _confirmCtrl = TextEditingController();
 
-  bool _obscure1 = true;
-  bool _obscure2 = true;
+  bool _obscure = true;
 
   @override
   void dispose() {
     _emailCtrl.dispose();
     _passwordCtrl.dispose();
-    _confirmCtrl.dispose();
     super.dispose();
   }
 
@@ -51,19 +48,11 @@ class _RegisterViewState extends State<_RegisterView> {
   String? _validatePassword(String? v) {
     final value = v ?? '';
     if (value.isEmpty) return 'Введите пароль';
-    if (value.length < 6) return 'Минимум 6 символов';
-    return null;
-  }
-
-  String? _validateConfirm(String? v) {
-    final value = v ?? '';
-    if (value.isEmpty) return 'Повторите пароль';
-    if (value != _passwordCtrl.text) return 'Пароли не совпадают';
     return null;
   }
 
   Future<void> _submit() async {
-    final controller = context.read<RegisterController>();
+    final controller = context.read<LoginController>();
     FocusScope.of(context).unfocus();
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
@@ -72,17 +61,15 @@ class _RegisterViewState extends State<_RegisterView> {
       password: _passwordCtrl.text,
     );
     if (!mounted) return;
-    if (ok) {
-      context.go('/login');
-    }
+    if (ok) context.go('/home');
   }
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.watch<RegisterController>();
+    final controller = context.watch<LoginController>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Регистрация')),
+      appBar: AppBar(title: const Text('Вход')),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -124,41 +111,21 @@ class _RegisterViewState extends State<_RegisterView> {
                     const SizedBox(height: 12),
                     TextFormField(
                       controller: _passwordCtrl,
-                      obscureText: _obscure1,
-                      autofillHints: const [AutofillHints.newPassword],
+                      obscureText: _obscure,
+                      autofillHints: const [AutofillHints.password],
                       decoration: InputDecoration(
                         labelText: 'Пароль',
                         border: const OutlineInputBorder(),
                         suffixIcon: IconButton(
                           onPressed: controller.isLoading
                               ? null
-                              : () => setState(() => _obscure1 = !_obscure1),
+                              : () => setState(() => _obscure = !_obscure),
                           icon: Icon(
-                            _obscure1 ? Icons.visibility : Icons.visibility_off,
+                            _obscure ? Icons.visibility : Icons.visibility_off,
                           ),
                         ),
                       ),
                       validator: _validatePassword,
-                      enabled: !controller.isLoading,
-                    ),
-                    const SizedBox(height: 12),
-                    TextFormField(
-                      controller: _confirmCtrl,
-                      obscureText: _obscure2,
-                      autofillHints: const [AutofillHints.newPassword],
-                      decoration: InputDecoration(
-                        labelText: 'Повторите пароль',
-                        border: const OutlineInputBorder(),
-                        suffixIcon: IconButton(
-                          onPressed: controller.isLoading
-                              ? null
-                              : () => setState(() => _obscure2 = !_obscure2),
-                          icon: Icon(
-                            _obscure2 ? Icons.visibility : Icons.visibility_off,
-                          ),
-                        ),
-                      ),
-                      validator: _validateConfirm,
                       enabled: !controller.isLoading,
                     ),
                     const SizedBox(height: 16),
@@ -170,13 +137,13 @@ class _RegisterViewState extends State<_RegisterView> {
                               width: 18,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Text('Создать аккаунт'),
+                          : const Text('Войти'),
                     ),
                     const SizedBox(height: 12),
                     TextButton(
                       onPressed:
-                          controller.isLoading ? null : () => context.go('/login'),
-                      child: const Text('Уже есть аккаунт? Войти'),
+                          controller.isLoading ? null : () => context.go('/register'),
+                      child: const Text('Нет аккаунта? Регистрация'),
                     ),
                   ],
                 ),
@@ -188,3 +155,4 @@ class _RegisterViewState extends State<_RegisterView> {
     );
   }
 }
+

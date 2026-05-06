@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import 'presentation/auth/login/login_screen.dart';
 import 'presentation/auth/register/register_screen.dart';
 import 'presentation/home/home_screen.dart';
 import 'presentation/state/session_controller.dart';
@@ -20,20 +21,25 @@ class App extends StatelessWidget {
           final sessionController = context.watch<SessionController>();
 
           final router = GoRouter(
-            initialLocation: '/register',
+            initialLocation: '/login',
             refreshListenable: sessionController,
             redirect: (context, state) {
               final signedIn = sessionController.isSignedIn;
-              final goingToRegister = state.matchedLocation == '/register';
+              final location = state.matchedLocation;
+              final goingToAuth = location == '/register' || location == '/login';
 
-              if (!signedIn && !goingToRegister) return '/register';
-              if (signedIn && goingToRegister) return '/home';
+              if (!signedIn && !goingToAuth) return '/login';
+              if (signedIn && goingToAuth) return '/home';
               return null;
             },
             routes: [
               GoRoute(
                 path: '/register',
                 builder: (context, state) => const RegisterScreen(),
+              ),
+              GoRoute(
+                path: '/login',
+                builder: (context, state) => const LoginScreen(),
               ),
               GoRoute(
                 path: '/home',

@@ -17,5 +17,18 @@ class SupabaseAuthService {
       throw AuthFailure('Не удалось зарегистрироваться. Попробуйте ещё раз.');
     }
   }
+
+  Future<void> signInWithEmail({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      await _client.auth.signInWithPassword(email: email, password: password);
+    } on AuthException catch (e) {
+      throw AuthFailure(e.message);
+    } catch (e) {
+      throw AuthFailure('Не удалось войти. Попробуйте ещё раз.');
+    }
+  }
 }
 
