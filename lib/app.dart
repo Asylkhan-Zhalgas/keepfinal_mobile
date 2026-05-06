@@ -4,7 +4,10 @@ import 'package:provider/provider.dart';
 
 import 'presentation/auth/login/login_screen.dart';
 import 'presentation/auth/register/register_screen.dart';
+import 'presentation/entries/entries_controller.dart';
+import 'presentation/entries/entry_editor/entry_editor_screen.dart';
 import 'presentation/home/home_screen.dart';
+import 'models/entry.dart';
 import 'presentation/state/session_controller.dart';
 
 class App extends StatelessWidget {
@@ -15,6 +18,7 @@ class App extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => SessionController()..init()),
+        ChangeNotifierProvider(create: (_) => EntriesController()..load()),
       ],
       child: Builder(
         builder: (context) {
@@ -44,6 +48,16 @@ class App extends StatelessWidget {
               GoRoute(
                 path: '/home',
                 builder: (context, state) => const HomeScreen(),
+              ),
+              GoRoute(
+                path: '/entry/new',
+                builder: (context, state) => const EntryEditorScreen(),
+              ),
+              GoRoute(
+                path: '/entry/edit',
+                builder: (context, state) => EntryEditorScreen(
+                  existing: state.extra as Entry,
+                ),
               ),
             ],
           );
