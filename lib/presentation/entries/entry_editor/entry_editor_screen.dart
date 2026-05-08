@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/entry.dart';
+import '../../../domain/entries/entities/entry.dart';
 import '../entries_controller.dart';
 
 class EntryEditorScreen extends StatefulWidget {

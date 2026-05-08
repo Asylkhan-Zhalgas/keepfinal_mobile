@@ -32,25 +32,5 @@ class Entry {
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
-
-  Map<String, Object?> toMap() => {
-        'id': id,
-        'title': title,
-        'content': content,
-        'date': date.toIso8601String(),
-        'createdAt': createdAt.toIso8601String(),
-        'updatedAt': updatedAt.toIso8601String(),
-      };
-
-  static Entry fromMap(Map<dynamic, dynamic> map) {
-    return Entry(
-      id: map['id'] as String,
-      title: map['title'] as String,
-      content: map['content'] as String,
-      date: DateTime.parse(map['date'] as String),
-      createdAt: DateTime.parse(map['createdAt'] as String),
-      updatedAt: DateTime.parse(map['updatedAt'] as String),
-    );
-  }
 }
 
