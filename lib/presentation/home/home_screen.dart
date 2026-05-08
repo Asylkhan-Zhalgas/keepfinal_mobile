@@ -1,59 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../models/entry.dart';
 import '../entries/entries_controller.dart';
+import '../widgets/confirm_bottom_sheet.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
-  Future<bool> _confirmDelete(BuildContext context) async {
-    final result = await showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: (context) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'Удалить запись?',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: 16),
-              FilledButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                style: FilledButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.error,
-                  foregroundColor: Theme.of(context).colorScheme.onError,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text('Удалить'),
-              ),
-              const SizedBox(height: 8),
-              OutlinedButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                style: OutlinedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text('Отмена'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-    return result ?? false;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,16 +16,6 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Дневник'),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              await Supabase.instance.client.auth.signOut();
-              if (!context.mounted) return;
-            },
-            icon: const Icon(Icons.logout),
-            tooltip: 'Выйти',
-          ),
-        ],
       ),
       body: SafeArea(
         child: Padding(
@@ -120,7 +64,12 @@ class HomeScreen extends StatelessWidget {
                         entry: e,
                         onTap: () => context.push('/entry/edit', extra: e),
                         onDelete: () async {
-                          final ok = await _confirmDelete(context);
+                          final ok = await showConfirmBottomSheet(
+                            context: context,
+                            title: 'Удалить запись?',
+                            confirmText: 'Удалить',
+                            destructive: true,
+                          );
                           if (!ok) return;
                           if (!context.mounted) return;
                           await context.read<EntriesController>().remove(e.id);
