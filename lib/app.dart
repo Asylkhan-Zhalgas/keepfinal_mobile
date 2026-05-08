@@ -8,6 +8,8 @@ import 'presentation/entries/entries_controller.dart';
 import 'presentation/entries/entry_editor/entry_editor_screen.dart';
 import 'presentation/home/home_screen.dart';
 import 'models/entry.dart';
+import 'presentation/settings/settings_screen.dart';
+import 'presentation/shell/app_shell.dart';
 import 'presentation/state/session_controller.dart';
 
 class App extends StatelessWidget {
@@ -31,9 +33,12 @@ class App extends StatelessWidget {
               final signedIn = sessionController.isSignedIn;
               final location = state.matchedLocation;
               final goingToAuth = location == '/register' || location == '/login';
+              final goingToApp =
+                  location == '/home' || location == '/settings' || location == '/entry/new' || location == '/entry/edit';
 
               if (!signedIn && !goingToAuth) return '/login';
               if (signedIn && goingToAuth) return '/home';
+              if (signedIn && !goingToApp && !goingToAuth) return '/home';
               return null;
             },
             routes: [
@@ -45,9 +50,27 @@ class App extends StatelessWidget {
                 path: '/login',
                 builder: (context, state) => const LoginScreen(),
               ),
-              GoRoute(
-                path: '/home',
-                builder: (context, state) => const HomeScreen(),
+              StatefulShellRoute.indexedStack(
+                builder: (context, state, navigationShell) =>
+                    AppShell(navigationShell: navigationShell),
+                branches: [
+                  StatefulShellBranch(
+                    routes: [
+                      GoRoute(
+                        path: '/home',
+                        builder: (context, state) => const HomeScreen(),
+                      ),
+                    ],
+                  ),
+                  StatefulShellBranch(
+                    routes: [
+                      GoRoute(
+                        path: '/settings',
+                        builder: (context, state) => const SettingsScreen(),
+                      ),
+                    ],
+                  ),
+                ],
               ),
               GoRoute(
                 path: '/entry/new',

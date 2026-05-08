@@ -48,10 +48,6 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.push('/entry/new'),
-        child: const Icon(Icons.add),
-      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -83,12 +79,6 @@ class HomeScreen extends StatelessWidget {
                         Text(
                           'Записей пока нет',
                           style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Нажми “+” внизу справа, чтобы создать первую запись.',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                          textAlign: TextAlign.center,
                         ),
                       ],
                     ),
@@ -135,7 +125,8 @@ class _EntryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateText = '${entry.date.day.toString().padLeft(2, '0')}.'
+    final dateText =
+        '${entry.date.day.toString().padLeft(2, '0')}.'
         '${entry.date.month.toString().padLeft(2, '0')}.'
         '${entry.date.year}';
 
@@ -158,4 +149,3 @@ class _EntryTile extends StatelessWidget {
     );
   }
 }
-
