@@ -10,21 +10,46 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   Future<bool> _confirmDelete(BuildContext context) async {
-    final result = await showDialog<bool>(
+    final result = await showModalBottomSheet<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Удалить запись?'),
-        content: const Text('Это действие нельзя отменить.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Отмена'),
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Удалить запись?',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 16),
+              FilledButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                style: FilledButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                  foregroundColor: Theme.of(context).colorScheme.onError,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text('Удалить'),
+              ),
+              const SizedBox(height: 8),
+              OutlinedButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text('Отмена'),
+              ),
+            ],
           ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Удалить'),
-          ),
-        ],
+        ),
       ),
     );
     return result ?? false;
@@ -142,7 +167,7 @@ class _EntryTile extends StatelessWidget {
         onTap: onTap,
         trailing: IconButton(
           onPressed: onDelete,
-          icon: const Icon(Icons.delete_outline),
+          icon: const Icon(Icons.delete_outline, color: Colors.red),
           tooltip: 'Удалить',
         ),
       ),
