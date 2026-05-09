@@ -127,7 +127,7 @@ class _EntryEditorScreenState extends State<EntryEditorScreen> {
                 OutlinedButton.icon(
                   onPressed: _pickDate,
                   icon: const Icon(Icons.calendar_month),
-                  label: Text('Дата: $dateText'),
+                  label: Text('Дата записи: $dateText'),
                 ),
                 const SizedBox(height: 16),
                 FilledButton(
