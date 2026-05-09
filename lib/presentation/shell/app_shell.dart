@@ -8,23 +8,35 @@ class AppShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentIndex = navigationShell.currentIndex;
+    final branchIndex = navigationShell.currentIndex;
+    // NavigationBar indices: 0 diary, 1 calendar, 2 add, 3 settings
+    final selectedIndex = switch (branchIndex) {
+      0 => 0,
+      1 => 1,
+      2 => 3,
+      _ => 0,
+    };
 
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: NavigationBar(
-        selectedIndex: currentIndex,
+        selectedIndex: selectedIndex,
         onDestinationSelected: (index) {
-          if (index == 1) {
+          if (index == 2) {
             context.push('/entry/new');
             return;
           }
 
-          // Map nav indices: 0 = diary, 2 = settings
-          final branchIndex = index == 0 ? 0 : 1;
+          // Map nav indices to branch indices: 0 diary, 1 calendar, 3 settings
+          final nextBranch = switch (index) {
+            0 => 0,
+            1 => 1,
+            3 => 2,
+            _ => 0,
+          };
           navigationShell.goBranch(
-            branchIndex,
-            initialLocation: branchIndex == currentIndex,
+            nextBranch,
+            initialLocation: nextBranch == branchIndex,
           );
         },
         destinations: const [
@@ -32,6 +44,11 @@ class AppShell extends StatelessWidget {
             icon: Icon(Icons.book_outlined),
             selectedIcon: Icon(Icons.book),
             label: 'Дневник',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.calendar_month_outlined),
+            selectedIcon: Icon(Icons.calendar_month),
+            label: 'Календарь',
           ),
           NavigationDestination(
             icon: Icon(Icons.add_circle_outline),

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../domain/entries/entities/entry.dart';
 import '../presentation/auth/login/login_screen.dart';
 import '../presentation/auth/register/register_screen.dart';
+import '../presentation/calendar/calendar_screen.dart';
 import '../presentation/entries/entry_editor/entry_editor_screen.dart';
 import '../presentation/home/home_screen.dart';
 import '../presentation/settings/settings_screen.dart';
@@ -19,6 +20,7 @@ class AppRouter {
         final location = state.matchedLocation;
         final goingToAuth = location == '/register' || location == '/login';
         final goingToApp = location == '/home' ||
+            location == '/calendar' ||
             location == '/settings' ||
             location == '/entry/new' ||
             location == '/entry/edit';
@@ -46,6 +48,14 @@ class AppRouter {
                 GoRoute(
                   path: '/home',
                   builder: (context, state) => const HomeScreen(),
+                ),
+              ],
+            ),
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: '/calendar',
+                  builder: (context, state) => const CalendarScreen(),
                 ),
               ],
             ),
